@@ -29,7 +29,7 @@ public class BetterRespawnConfig extends Configuration {
             "Respawn radius",
             "min",
             128,
-            "The minimum distance to spawn the player away from its death location",
+            "The minimum distance to spawn the player away from its death location (min = 0, max = 4096)",
             0, 4096
             ).getInt();
 
@@ -52,10 +52,12 @@ public class BetterRespawnConfig extends Configuration {
         this.respawnCooldown = this.get(
             "Respawn mechanic",
             "respawnCooldown",
-            200,
-            "If ya die within cooldown, the respawn nearby button will be disabled (use tick minecraft)",
+            300,
+            "If ya die within cooldown, the respawn nearby button will be disabled (Default: 300 ticks - 15s)",
             20, 6000
         ).getInt();
+
+        this.save();
     }
 
     public static int clientRespawnCooldown = 0;
