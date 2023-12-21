@@ -1,6 +1,7 @@
 package net.jp.hellparadise.betterrespawn;
 
 import java.io.File;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -25,12 +26,16 @@ public class BetterRespawnMod {
         LOGGER.info("Hello From {}!", Tags.MOD_NAME);
 
         BetterRespawnConfig.init(new File(event.getModConfigurationDirectory().getPath(), "BetterRespawn.cfg"));
+
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        BetterRespawnConfig.clientRespawnCooldown--;
+        if (BetterRespawnConfig.clientRespawnCooldown > 0) {
+            BetterRespawnConfig.clientRespawnCooldown--;
+        }
     }
 }

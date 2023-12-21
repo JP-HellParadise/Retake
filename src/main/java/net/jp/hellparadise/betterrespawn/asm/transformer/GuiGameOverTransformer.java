@@ -4,7 +4,6 @@ import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.Opcodes.BIPUSH;
 
 import java.util.Iterator;
-import net.jp.hellparadise.betterrespawn.BetterRespawnConfig;
 import net.jp.hellparadise.betterrespawn.asm.BetterRespawnPlugin;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
@@ -17,16 +16,20 @@ public class GuiGameOverTransformer implements IClassTransformer {
     private static final String GuiGameOver = "net.minecraft.client.gui.GuiGameOver";
     private static final String GuiButton = "net.minecraft.client.gui.GuiButton";
     private static final String Minecraft = "net.minecraft.client.Minecraft";
+
     private static final String[] I18n$format = {BetterRespawnPlugin.isDeobf ? "format" : "func_135052_a", "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"};
     private static final String[] GuiGameOver$initGui = {BetterRespawnPlugin.isDeobf ? "initGui" : "func_73866_w_", "()V"};
     private static final String[] GuiGameOver$actionPerformed = {BetterRespawnPlugin.isDeobf ? "actionPerformed" : "func_146284_a", "(Lnet/minecraft/client/gui/GuiButton;)V"};
+    private static final String[] GuiGameOver$updateScreen = {BetterRespawnPlugin.isDeobf ? "updateScreen" : "func_73876_c", "()V"};
+    private static final String[] Minecraft$displayGuiScreen = {BetterRespawnPlugin.isDeobf ? "displayGuiScreen" : "func_147108_a", "(Lnet/minecraft/client/gui/GuiScreen;)V"};
+
     private static final String[] GuiGameOver$buttonList = {BetterRespawnPlugin.isDeobf ? "buttonList" : "field_146292_n", "Ljava/util/List;"};
     private static final String[] GuiGameOver$width = {BetterRespawnPlugin.isDeobf ? "width" : "field_146294_l", "I"};
     private static final String[] GuiGameOver$height = {BetterRespawnPlugin.isDeobf ? "height" : "field_146295_m", "I"};
     private static final String[] GuiGameOver$mc = {BetterRespawnPlugin.isDeobf ? "mc" : "field_146297_k", "Lnet/minecraft/client/Minecraft;"};
     private static final String[] GuiButton$id = {BetterRespawnPlugin.isDeobf ? "id" : "field_146127_k", "I"};
+    private static final String[] GuiButton$enabled = {BetterRespawnPlugin.isDeobf ? "enabled" : "field_146124_l", "Z"};
     private static final String[] Minecraft$player = {BetterRespawnPlugin.isDeobf ? "player" : "field_71439_g", "Lnet/minecraft/client/entity/EntityPlayerSP;"};
-    private static final String[] Minecraft$displayGuiScreen = {BetterRespawnPlugin.isDeobf ? "displayGuiScreen" : "func_147108_a", "(Lnet/minecraft/client/gui/GuiScreen;)V"};
 
     private static final String BetterRespawnConfig = net.jp.hellparadise.betterrespawn.BetterRespawnConfig.class.getName();
     private static final String IBetterPlayerSP = net.jp.hellparadise.betterrespawn.interfaces.IBetterPlayerSP.class.getName();
@@ -156,9 +159,50 @@ public class GuiGameOverTransformer implements IClassTransformer {
                     break;
                 }
             }
+
+            if (mn.name.equals(GuiGameOver$updateScreen[0]) && mn.desc.equals(GuiGameOver$updateScreen[1])) {
+                BetterRespawnPlugin.LOGGER.info("Visiting method {}{}", mn.name, mn.desc);
+                InsnList insnList = mn.instructions;
+                boolean patched = false;
+                Iterator<AbstractInsnNode> ite = insnList.iterator();
+                while(ite.hasNext()) {
+                    AbstractInsnNode insn = ite.next();
+                    if (insn instanceof FieldInsnNode fieldInsn && insn.getOpcode() == PUTFIELD
+                        && fieldInsn.owner.contains(GuiButton.replace(".", "/"))
+                        && fieldInsn.name.contains(GuiButton$enabled[0])
+                        && fieldInsn.desc.contains(GuiButton$enabled[1])
+                        && insn.getPrevious().getPrevious() instanceof VarInsnNode insnNode
+                        && insn.getNext() instanceof LabelNode continueNode
+                    ) {
+                        InsnList instList = new InsnList();
+                        LabelNode enableLable = new LabelNode();
+                        instList.add(new VarInsnNode(ALOAD, 2));// ALOAD 2
+                        instList.add(new FieldInsnNode(GETFIELD, GuiButton.replace(".", "/"), GuiButton$id[0], GuiButton$id[1]));// GETFIELD net/minecraft/client/gui/GuiButton.id : I
+                        instList.add(new InsnNode(ICONST_2));// ICONST_2
+                        instList.add(new JumpInsnNode(IF_ICMPNE, enableLable));// IF_ICMPNE L7
+                        instList.add(new VarInsnNode(ALOAD, 2));// ALOAD 2
+                        instList.add(new FieldInsnNode(GETFIELD, GuiButton.replace(".", "/"), GuiButton$id[0], GuiButton$id[1]));// GETFIELD net/minecraft/client/gui/GuiButton.id : I
+                        instList.add(new InsnNode(ICONST_2));// ICONST_2
+                        instList.add(new JumpInsnNode(IF_ICMPNE, continueNode));// IF_ICMPNE L8
+                        instList.add(new FieldInsnNode(GETSTATIC, BetterRespawnConfig.replace(".", "/"), "clientRespawnCooldown", "I"));// GETFIELD net/minecraft/client/gui/GuiButton.id : I
+                        instList.add(new JumpInsnNode(IFNE, continueNode));// IFNE L8
+                        instList.add(enableLable);// L7
+                        mn.instructions.insertBefore(insnNode, instList);
+                        patched = true;
+                    }
+                }
+
+                if (patched) {
+                    BetterRespawnPlugin.LOGGER.info("Successful visiting method {}{}", mn.name, mn.desc);
+                    patches++;
+                } else {
+                    BetterRespawnPlugin.LOGGER.info("Failed visiting method {}{}", mn.name, mn.desc);
+                    break;
+                }
+            }
         }
 
-        if (patches == 2) { // specific patching amount, will rewrite all of this to something better instead
+        if (patches == 3) { // specific patching amount, will rewrite all of this to something better instead
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             cn.accept(classWriter);
             BetterRespawnPlugin.LOGGER.info("Successful patched class {}", transformedName);
