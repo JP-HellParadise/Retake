@@ -1,0 +1,5 @@
+# Translation key for respawn
+betterrespawn.died.respawn=Respawn Nearby
+
+# Translation key for denied respawn
+betterrespawn.died.recently=You died too recently to spawn nearby.
