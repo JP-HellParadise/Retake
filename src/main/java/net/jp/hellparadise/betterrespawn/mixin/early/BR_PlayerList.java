@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import net.jp.hellparadise.betterrespawn.SpawnUtil;
+import net.jp.hellparadise.betterrespawn.helper.SpawnUtil;
 import net.jp.hellparadise.betterrespawn.interfaces.IBetterPlayerMP;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
