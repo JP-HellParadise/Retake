@@ -1,5 +1,7 @@
 package net.jp.hellparadise.betterrespawn;
 
+import java.util.Random;
+import javax.annotation.Nullable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.BlockPos;
@@ -7,9 +9,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-
-import javax.annotation.Nullable;
-import java.util.Random;
 
 public class SpawnUtil {
 
@@ -21,15 +20,14 @@ public class SpawnUtil {
 
     public static SpawnUtil instance;
 
-    @Nullable
-    public static BlockPos findValidRespawnLocation(WorldServer world, BlockPos deathLocation) {
+    @Nullable public static BlockPos findValidRespawnLocation(WorldServer world, BlockPos deathLocation) {
         if (instance == null) {
             instance = new SpawnUtil();
         }
 
-        int min = BetterRespawnConfig.instance().minRespawnRadius();
-        int max = BetterRespawnConfig.instance().maxRespawnRadius();
-        int retry = BetterRespawnConfig.instance().retryAttempt();
+        int min = BetterRespawnConfig.instance().minRespawnRadius;
+        int max = BetterRespawnConfig.instance().maxRespawnRadius;
+        int retry = BetterRespawnConfig.instance().retryAttempt;
 
         BlockPos pos = null;
         for (int i = 0; i < retry && pos == null; i++) {

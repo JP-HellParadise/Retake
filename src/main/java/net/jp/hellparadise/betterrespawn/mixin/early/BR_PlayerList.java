@@ -46,7 +46,6 @@ public abstract class BR_PlayerList {
         }
     }
 
-
     @WrapOperation(
         method = "recreatePlayerEntity",
         at = @At(
