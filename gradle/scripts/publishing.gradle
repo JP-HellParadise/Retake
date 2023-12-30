@@ -56,14 +56,14 @@ if (propertyBool('publish_to_curseforge')) {
             }
             mainArtifact tasks.reobfJar, {
                 displayName = "${propertyString('mod_name')} ${propertyString('mod_version')}"
-                if (propertyBool('use_mixins') || propertyBool('use_asset_mover')) {
+                if (propertyBool('use_mixins')) {
                     relations {
-                        if (propertyBool('use_mixins')) {
-                            requiredDependency 'mixin-booter'
-                        }
-                        if (propertyBool('use_asset_mover')) {
-                            requiredDependency 'assetmover'
-                        }
+                        requiredDependency 'mixin-booter'
+                    }
+                }
+                if (propertyBool('use_asset_mover')) {
+                    relations {
+                        requiredDependency 'assetmover'
                     }
                 }
             }
