@@ -35,12 +35,11 @@ if (propertyBool('publish_to_maven')) {
 // Documentation here: https://github.com/matthewprenger/CurseGradle/wiki/
 if (propertyBool('publish_to_curseforge')) {
     apply plugin: 'com.matthewprenger.cursegradle'
-    assertEnvironmentVariable('CURSEFORGE_TOKEN')
     assertProperty('curseforge_project_id')
     assertProperty('release_type')
     setDefaultProperty('curseforge_debug', false, false)
     curseforge {
-        apiKey System.getenv('CURSEFORGE_TOKEN')
+        apiKey = System.getenv('CURSEFORGE_TOKEN') == null ? "" : System.getenv('CURSEFORGE_TOKEN')
         // noinspection GroovyAssignabilityCheck
         project {
             id = propertyString('curseforge_project_id')
@@ -56,7 +55,7 @@ if (propertyBool('publish_to_curseforge')) {
                 }
             }
             mainArtifact tasks.reobfJar, {
-                displayName "${propertyString('mod_name')} ${propertyString('mod_version')}"
+                displayName = "${propertyString('mod_name')} ${propertyString('mod_version')}"
                 if (propertyBool('use_mixins') || propertyBool('use_asset_mover')) {
                     relations {
                         if (propertyBool('use_mixins')) {
@@ -78,18 +77,17 @@ if (propertyBool('publish_to_curseforge')) {
 // Documentation here: https://github.com/modrinth/minotaur
 if (propertyBool('publish_to_modrinth')) {
     apply plugin: 'com.modrinth.minotaur'
-    assertEnvironmentVariable('MODRINTH_TOKEN')
     assertProperty('modrinth_project_id')
     assertProperty('release_type')
     setDefaultProperty('modrinth_debug', false, false)
     modrinth {
-        token = System.getenv('MODRINTH_TOKEN')
+        token = System.getenv('MODRINTH_TOKEN') ? "" : System.getenv('MODRINTH_TOKEN')
         projectId = propertyString('modrinth_project_id')
         versionNumber = propertyString('mod_version')
         versionType = propertyString('release_type')
         uploadFile = tasks.reobfJar
-        gameVersions ['1.12.2']
-        loaders ['forge']
+        gameVersions = ['1.12.2']
+        loaders = ['forge']
         debugMode = propertyBool('modrinth_debug')
         if (propertyBool('use_mixins') || propertyBool('use_asset_mover')) {
             dependencies {
