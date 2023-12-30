@@ -11,18 +11,8 @@ import net.minecraft.world.WorldServer;
 
 public class SpawnUtil {
 
-    private final Random random;
-
-    public SpawnUtil() {
-        random = new Random();
-    }
-
-    public static SpawnUtil instance;
-
-    @Nullable public static BlockPos findValidRespawnLocation(WorldServer world, BlockPos deathLocation) {
-        if (instance == null) {
-            instance = new SpawnUtil();
-        }
+    @Nullable
+    public static BlockPos findValidRespawnLocation(WorldServer world, BlockPos deathLocation) {
 
         int min = BetterRespawnConfig.instance().minRespawnRadius;
         int max = BetterRespawnConfig.instance().maxRespawnRadius;
@@ -32,25 +22,25 @@ public class SpawnUtil {
         for (int i = 0; i < retry && pos == null; i++) {
             BetterRespawnMod.LOGGER.debug("Searching for respawn location - Attempt {}/{}", i + 1, retry);
             pos = world.getTopSolidOrLiquidBlock(new BlockPos(
-                    instance.getRandomRange(deathLocation.getX(), min, max),
+                    SpawnUtil.getRandomRange(deathLocation.getX(), min, max, world.rand),
                     0,
-                    instance.getRandomRange(deathLocation.getZ(), min, max)
+                    SpawnUtil.getRandomRange(deathLocation.getZ(), min, max, world.rand)
                 ));
             if (!WorldEntitySpawner.canCreatureTypeSpawnAtLocation(EntityLiving.SpawnPlacementType.ON_GROUND, world, pos)) {
                 pos = null;
             }
         }
         if (pos == null) {
-            BetterRespawnMod.LOGGER.info("Found no valid respawn location after {} attempts", retry);
-            BetterRespawnMod.LOGGER.info("Use minecraft fallback as respawn location");
+            BetterRespawnMod.LOGGER.debug("Found no valid respawn location after {} attempts", retry);
+            BetterRespawnMod.LOGGER.debug("Use minecraft fallback as respawn location");
         } else {
-            BetterRespawnMod.LOGGER.info("Found valid respawn location: [{}, {}, {}]", pos.getX(), pos.getY(), pos.getZ());
+            BetterRespawnMod.LOGGER.debug("Found valid respawn location: [{}, {}, {}]", pos.getX(), pos.getY(), pos.getZ());
         }
         return pos;
     }
 
-    private int getRandomRange(int actual, int minDistance, int maxDistance) {
-        return actual + (random.nextBoolean() ? -1 : 1) * (minDistance + random.nextInt(maxDistance - minDistance));
+    private static int getRandomRange(int actual, int minDistance, int maxDistance, Random rand) {
+        return actual + (rand.nextBoolean() ? -1 : 1) * (minDistance + rand.nextInt(maxDistance - minDistance));
     }
 
 }
