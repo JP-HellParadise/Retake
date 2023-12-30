@@ -1,7 +1,6 @@
 package net.jp.hellparadise.betterrespawn.mixin.early;
 
-import net.jp.hellparadise.betterrespawn.interfaces.IBetterPlayerMP;
-import net.jp.hellparadise.betterrespawn.packet.RespawnPackage;
+import net.jp.hellparadise.betterrespawn.interfaces.IBetterRespawn;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.CPacketClientStatus;
@@ -19,9 +18,7 @@ public abstract class BR_NetHandlerPlayServer {
 
     @Inject(method = "processClientStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getPlayerList()Lnet/minecraft/server/management/PlayerList;", ordinal = 1))
     private void betterRespawn$processClientStatus(CPacketClientStatus packetIn, CallbackInfo ci) {
-        if (packetIn instanceof RespawnPackage) {
-            ((IBetterPlayerMP) this.player).betterRespawn$enableBetterRespawn();
-        }
+        ((IBetterRespawn) this.player).betterRespawn$setBetterRespawn(((IBetterRespawn) packetIn).betterRespawn$isBetterRespawn());
     }
 
 }
