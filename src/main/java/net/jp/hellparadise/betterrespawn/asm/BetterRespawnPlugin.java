@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import net.jp.hellparadise.betterrespawn.asm.transformer.GuiGameOverTransformer;
 import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +14,7 @@ import zone.rong.mixinbooter.IEarlyMixinLoader;
 @IFMLLoadingPlugin.Name("BetterRespawnPlugin")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 @IFMLLoadingPlugin.TransformerExclusions({"net.jp.hellparadise.betterrespawn.asm"})
-@IFMLLoadingPlugin.SortingIndex(1001)
+@IFMLLoadingPlugin.SortingIndex(1000)
 public class BetterRespawnPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     public static final Logger LOGGER = LogManager.getLogger("BetterRespawnPlugin");
