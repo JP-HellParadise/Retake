@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 public class BetterRespawnMod {
 
     public static final Logger LOGGER = LogManager.getLogger(Tags.MOD_NAME);
+    public static int clientRespawnCooldown = 0;
 
     /**
      * <a href="https://wiki.cleanroommc.com/mod-development/event/overview/">
@@ -30,12 +31,12 @@ public class BetterRespawnMod {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (BetterRespawnConfig.clientRespawnCooldown > 0) {
-            BetterRespawnConfig.clientRespawnCooldown--;
+        if (clientRespawnCooldown > 0) {
+            clientRespawnCooldown--;
         }
     }
+
 }

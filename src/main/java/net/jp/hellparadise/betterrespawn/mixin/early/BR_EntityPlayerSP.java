@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntityPlayerSP.class)
 public abstract class BR_EntityPlayerSP implements IBetterPlayerSP {
+
     @Final
     @Shadow
     public NetHandlerPlayClient connection;
@@ -18,4 +19,5 @@ public abstract class BR_EntityPlayerSP implements IBetterPlayerSP {
     {
         this.connection.sendPacket(new RespawnPackage());
     }
+
 }

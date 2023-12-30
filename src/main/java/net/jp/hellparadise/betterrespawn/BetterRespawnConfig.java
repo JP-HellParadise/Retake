@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
 public class BetterRespawnConfig extends Configuration {
+
     private static BetterRespawnConfig instance;
 
     public static void init(final File configFile) {
@@ -60,5 +61,4 @@ public class BetterRespawnConfig extends Configuration {
         this.save();
     }
 
-    public static int clientRespawnCooldown = 0;
 }

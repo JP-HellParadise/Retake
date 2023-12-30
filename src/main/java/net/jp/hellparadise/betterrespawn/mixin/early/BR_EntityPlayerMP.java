@@ -18,4 +18,5 @@ public abstract class BR_EntityPlayerMP implements IBetterPlayerMP {
     public void betterRespawn$enableBetterRespawn() {
         betterRespawn$isBetterRespawn = true;
     }
+
 }

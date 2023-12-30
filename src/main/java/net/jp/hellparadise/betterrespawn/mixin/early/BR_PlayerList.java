@@ -56,4 +56,5 @@ public abstract class BR_PlayerList {
     private boolean betterRespawn$recreatePlayerEntity$isSpawnForced(EntityPlayerMP playerIn, int dimension, Operation<Boolean> original) {
         return ((IBetterPlayerMP) playerIn).betterRespawn$isBetterRespawn() || original.call(playerIn, dimension);
     }
+
 }

@@ -53,5 +53,4 @@ public class SpawnUtil {
         return actual + (random.nextBoolean() ? -1 : 1) * (minDistance + random.nextInt(maxDistance - minDistance));
     }
 
-
 }

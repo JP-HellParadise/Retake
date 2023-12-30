@@ -18,7 +18,6 @@ import zone.rong.mixinbooter.IEarlyMixinLoader;
 @IFMLLoadingPlugin.SortingIndex(1001)
 public class BetterRespawnPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
-    public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final Logger LOGGER = LogManager.getLogger("BetterRespawnPlugin");
 
     @Override
@@ -39,9 +38,7 @@ public class BetterRespawnPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {
-
-    }
+    public void injectData(Map<String, Object> data) {}
 
     @Override
     public String getAccessTransformerClass() {
@@ -52,4 +49,5 @@ public class BetterRespawnPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader
     public List<String> getMixinConfigs() {
         return Collections.singletonList("mixins.betterrespawn.json");
     }
+
 }

@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(NetHandlerPlayServer.class)
 public abstract class BR_NetHandlerPlayServer {
+
     @Shadow
     public EntityPlayerMP player;
 
@@ -22,4 +23,5 @@ public abstract class BR_NetHandlerPlayServer {
             ((IBetterPlayerMP) this.player).betterRespawn$enableBetterRespawn();
         }
     }
+
 }
