@@ -5,7 +5,6 @@ import static org.objectweb.asm.Opcodes.BIPUSH;
 
 import java.util.Iterator;
 import java.util.function.Function;
-
 import net.jp.hellparadise.betterrespawn.asm.BetterRespawnPlugin;
 import net.jp.hellparadise.betterrespawn.helper.ASMUtil;
 import net.minecraft.launchwrapper.IClassTransformer;

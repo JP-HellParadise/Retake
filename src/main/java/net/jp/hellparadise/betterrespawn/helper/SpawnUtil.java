@@ -12,8 +12,7 @@ import net.minecraft.world.WorldServer;
 
 public class SpawnUtil {
 
-    @Nullable
-    public static BlockPos findValidRespawnLocation(EntityPlayerMP playerIn) {
+    @Nullable public static BlockPos findValidRespawnLocation(EntityPlayerMP playerIn) {
 
         int min = BetterRespawnConfig.instance().minRespawnRadius;
         int max = BetterRespawnConfig.instance().maxRespawnRadius;

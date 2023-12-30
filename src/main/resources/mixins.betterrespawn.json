@@ -1,18 +1,16 @@
 {
-  "server": [],
-  "mixins": [
-    "BR_EntityPlayerMP",
-    "BR_CPacketClientStatus",
-    "BR_NetHandlerPlayServer",
-    "BR_PlayerList"
-  ],
-  "package": "net.jp.hellparadise.betterrespawn.mixin.early",
-  "minVersion": "0.8.5",
-  "compatibilityLevel": "JAVA_8",
-  "client": [
-    "BR_EntityPlayerSP"
-  ],
-  "required": true,
-  "refmap": "mixins.${mod_id}.refmap.json",
-  "target": "@env(DEFAULT)"
+      "server": [],
+      "mixins": [
+            "BR_EntityPlayerMP",
+            "BR_CPacketClientStatus",
+            "BR_NetHandlerPlayServer",
+            "BR_PlayerList"
+      ],
+      "package": "net.jp.hellparadise.betterrespawn.mixin.early",
+      "minVersion": "0.8.5",
+      "compatibilityLevel": "JAVA_8",
+      "client": ["BR_EntityPlayerSP"],
+      "required": true,
+      "refmap": "mixins.${mod_id}.refmap.json",
+      "target": "@env(DEFAULT)"
 }
