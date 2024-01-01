@@ -1,0 +1,11 @@
+{
+      "server": [],
+      "mixins": [],
+      "package": "net.jp.hellparadise.retake.mixin.early",
+      "minVersion": "0.8.5",
+      "compatibilityLevel": "JAVA_8",
+      "client": [],
+      "required": true,
+      "refmap": "mixins.${mod_id}.refmap.json",
+      "target": "@env(DEFAULT)"
+}
