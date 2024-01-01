@@ -45,11 +45,13 @@ public class RetakeMessage implements IMessage {
                     Retake.proxy.getThreadListener(ctx).addScheduledTask(() -> Retake.NetworkHandler.INSTANCE.sendTo(
                         new RetakeMessage().isCooldown(RetakeDataManager.isCooldown(ctx.getServerHandler().player)), ctx.getServerHandler().player));
                 } else if (netHandler.player.getHealth() <= 0.0F) {
-                    netHandler.player = netHandler.player.server.getPlayerList().recreatePlayerEntity(netHandler.player, netHandler.player.dimension, false);
-                    Retake.proxy.getThreadListener(ctx).addScheduledTask(() -> RetakeDataManager.setRetakeData(netHandler.player, RetakeConfig.cooldownAsTicks()));
+                    Retake.proxy.getThreadListener(ctx).addScheduledTask(() -> {
+                        netHandler.player = netHandler.player.server.getPlayerList().recreatePlayerEntity(netHandler.player, netHandler.player.dimension, false);
+                        RetakeDataManager.setRetakeData(netHandler.player, RetakeConfig.cooldownAsTicks());
+                    });
                 }
             } else if (ctx.side.isClient()) {
-                GuiGameOverTransformer.Hook.isCooldown.set(message.cooldown);
+                Retake.proxy.getThreadListener(ctx).addScheduledTask(() -> GuiGameOverTransformer.Hook.isCooldown.set(message.cooldown));
             }
 
             return null;

@@ -1,6 +1,7 @@
 package net.jp.hellparadise.retake.components;
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import java.util.UUID;
 import net.jp.hellparadise.retake.Tags;
 import net.jp.hellparadise.retake.util.DebugUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +23,7 @@ public class RetakeDataManager {
         return instance;
     }
 
-    private final Object2IntArrayMap<EntityPlayer> playerList;
+    private final Object2IntArrayMap<UUID> playerList;
 
     public RetakeDataManager() {
         playerList = new Object2IntArrayMap<>();
@@ -30,7 +31,7 @@ public class RetakeDataManager {
 
     @SubscribeEvent
     public void onPlayerConnectEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        RetakeDataManager.instance().playerList.putIfAbsent(event.player, 0);
+        RetakeDataManager.instance().playerList.putIfAbsent(event.player.getUniqueID(), 0);
     }
 
     @SubscribeEvent
@@ -45,15 +46,15 @@ public class RetakeDataManager {
     }
 
     public static void setRetakeData(EntityPlayer player, int value) {
-        RetakeDataManager.instance().playerList.put(player, value);
-        DebugUtils.startDebug(player);
+        RetakeDataManager.instance().playerList.put(player.getUniqueID(), value);
+        DebugUtils.startDebug(player.getUniqueID());
     }
 
     private void decrement() {
-        for (EntityPlayer player : playerList.keySet()) {
-            playerList.computeIfPresent(player, (key, val) -> {
+        for (UUID uuid : playerList.keySet()) {
+            playerList.computeIfPresent(uuid, (key, val) -> {
                 if (val > 0) return --val;
-                DebugUtils.stopDebug(player);
+                DebugUtils.stopDebug(uuid);
                 return val;
             });
         }
