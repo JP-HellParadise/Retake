@@ -12,10 +12,11 @@ public class DebugUtils {
     private static WeakHashMap<UUID, AtomicLong> debugList;
 
     public static void startDebug(UUID uuid) {
-        if (RetakeConfig.debugCounter || debugList == null) {
+        if (RetakeConfig.debugCounter && debugList == null) {
             debugList = new WeakHashMap<>();
         }
 
+        Retake.LOGGER.info("Start cooldown on UUID {}", uuid);
         debugList.putIfAbsent(uuid, new AtomicLong(System.currentTimeMillis()));
     }
 
@@ -25,7 +26,7 @@ public class DebugUtils {
         }
 
         debugList.computeIfPresent(uuid, (key, val) -> {
-            Retake.LOGGER.info("UUID: {}, complete cooldown after {}s", key.toString(),TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - val.get()));
+            Retake.LOGGER.info("UUID: {}, completed cooldown after {}s", key.toString(),TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - val.get()));
             return null;
         });
     }
