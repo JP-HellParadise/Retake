@@ -48,4 +48,5 @@ public class RetakePlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     public List<String> getMixinConfigs() {
         return Collections.singletonList("mixins.retake.json");
     }
+
 }

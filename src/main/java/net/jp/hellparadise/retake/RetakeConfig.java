@@ -34,4 +34,5 @@ public class RetakeConfig {
         "Default: false"
     })
     public static boolean debugCounter = false;
+
 }
