@@ -8,15 +8,16 @@ import java.util.function.Function;
 import net.jp.hellparadise.retake.Retake;
 import net.jp.hellparadise.retake.asm.RetakePlugin;
 import net.jp.hellparadise.retake.components.RetakeButton;
+import net.jp.hellparadise.retake.components.RetakeTextComponentTranslation;
 import net.jp.hellparadise.retake.packet.RetakeMessage;
 import net.jp.hellparadise.retake.util.Utils;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiGameOver;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.*;
 
 @SuppressWarnings("unused")
@@ -53,8 +54,6 @@ public class GuiGameOverTransformer implements IClassTransformer {
         classNode.interfaces.add(internal$Hook);
 
         int patched = 0;
-        RetakePlugin.LOGGER.debug("Generate empty method {} from interface {}", "Retake$hook$drawScreen", internal$Hook);
-        patched += PatchingMethod.Inject$hook$drawScreen.patchMethod((MethodNode) classNode.visitMethod(ACC_PUBLIC, "Retake$hook$drawScreen", "(II)V", null, null));
 
         // method checking
         for (MethodNode mn : classNode.methods) {
@@ -100,65 +99,29 @@ public class GuiGameOverTransformer implements IClassTransformer {
 
     private enum PatchingMethod {
         Patch$initGui(visitor -> {
-            int count$IADD = 0, count$INVOKEINTERFACE = 0;
-            int addNewButton = 0, fixButtonPos = 0;
+            int ordinal = 4;
 
             Iterator<AbstractInsnNode> insnNodeIterator = visitor.instructions.iterator();
-
             while(insnNodeIterator.hasNext()) {
-                AbstractInsnNode insn = insnNodeIterator.next();
-
-                // Fix button pos from exist one
-                if(fixButtonPos < 2 && insn instanceof InsnNode && insn.getOpcode() == IADD
-                    && insn.getPrevious() instanceof IntInsnNode intInsn && intInsn.getOpcode() == BIPUSH
-                ) {
-                    // implementation
-                    if (++count$IADD > 2) {
-                        intInsn.operand += 24;
-                        fixButtonPos++;
-                    }
-                }
-
-                // Add new button
-                if (addNewButton < 1 && insn instanceof MethodInsnNode && insn.getOpcode() == INVOKEINTERFACE
-                    && ((MethodInsnNode) insn).owner.contains("java/util/List")
-                    && ((MethodInsnNode) insn).name.contains("add")
-                    && ++count$INVOKEINTERFACE == 4
+                if (insnNodeIterator.next() instanceof MethodInsnNode methodInsn && methodInsn.getOpcode() == INVOKEINTERFACE
+                    && methodInsn.owner.contains("java/util/List")
+                    && methodInsn.name.contains("add")
+                    && --ordinal == 0
                 ) {
                     // implementation
                     InsnList instList = new InsnList();
-                    instList.add(new LabelNode());
                     instList.add(new VarInsnNode(ALOAD, 0));
-                    instList.add(new FieldInsnNode(GETFIELD, internal$GuiGameOver, isDeobf ? "buttonList" : "field_146292_n", "Ljava/util/List;"));
-                    instList.add(new TypeInsnNode(NEW, internal$RetakeButton));
-                    instList.add(new InsnNode(DUP));
-                    instList.add(new InsnNode(ICONST_2));
                     instList.add(new VarInsnNode(ALOAD, 0));
-                    instList.add(new FieldInsnNode(GETFIELD, internal$GuiGameOver, isDeobf ? "width" : "field_146294_l", "I"));
-                    instList.add(new InsnNode(ICONST_2));
-                    instList.add(new InsnNode(IDIV));
-                    instList.add(new IntInsnNode(BIPUSH, 100));
-                    instList.add(new InsnNode(ISUB));
-                    instList.add(new VarInsnNode(ALOAD, 0));
-                    instList.add(new FieldInsnNode(GETFIELD, internal$GuiGameOver, isDeobf ? "height" : "field_146295_m", "I"));
-                    instList.add(new InsnNode(ICONST_4));
-                    instList.add(new InsnNode(IDIV));
-                    instList.add(new IntInsnNode(BIPUSH, 72));
-                    instList.add(new InsnNode(IADD));
-                    instList.add(new LdcInsnNode("retake.button.respawn"));
-                    instList.add(new InsnNode(ICONST_0));
-                    instList.add(new TypeInsnNode(ANEWARRAY, "java/lang/Object"));
-                    instList.add(new MethodInsnNode(INVOKESTATIC, isDeobf ? "net/minecraft/client/resources/I18n" : "cey", isDeobf ? "format" : "func_135052_a", "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", false));
-                    instList.add(new MethodInsnNode(INVOKESPECIAL, internal$RetakeButton, "<init>", "(IIILjava/lang/String;)V", false));
-                    instList.add(new MethodInsnNode(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true));
-                    instList.add(new InsnNode(POP));
-                    visitor.instructions.insert(insn.getNext(), instList);
+                    instList.add(new MethodInsnNode(INVOKEVIRTUAL, internal$GuiGameOver, "Retake$hook$initGui", "(" + Utils.ASM$asObjectDesc(internal$GuiGameOver) + ")V", false));
 
-                    addNewButton++;
+                    // insert
+                    visitor.instructions.insert(methodInsn.getNext(), instList);
+
+                    return true;
                 }
             }
 
-            return fixButtonPos == 2 && addNewButton == 1;
+            return false;
         }),
 
         Patch$actionPerformed(visitor -> {
@@ -173,9 +136,10 @@ public class GuiGameOverTransformer implements IClassTransformer {
                     instList.add(new MethodInsnNode(INVOKEVIRTUAL,
                         internal$GuiGameOver,
                         "Retake$hook$actionPerformed",
-                        "(" + Utils.ASM$asObjectDesc(isDeobf ? "net/minecraft/client/gui/GuiScreen" : "blk", internal$GuiButton) + ")V",
+                        "(" + Utils.ASM$asObjectDesc(internal$GuiGameOver, internal$GuiButton) + ")V",
                         false));
 
+                    // insert
                     visitor.instructions.insertBefore(returnInsn, instList);
 
                     return true;
@@ -192,9 +156,16 @@ public class GuiGameOverTransformer implements IClassTransformer {
                     // implementation
                     InsnList instList = new InsnList();
                     instList.add(new VarInsnNode(ALOAD, 0));
+                    instList.add(new VarInsnNode(ALOAD, 0));
                     instList.add(new VarInsnNode(ILOAD, 1));
                     instList.add(new VarInsnNode(ILOAD, 2));
-                    instList.add(new MethodInsnNode(INVOKEVIRTUAL, internal$GuiGameOver, "Retake$hook$drawScreen", "(II)V", false));
+                    instList.add(new MethodInsnNode(INVOKEVIRTUAL,
+                        internal$GuiGameOver,
+                        "Retake$hook$drawScreen",
+                        "(" + Utils.ASM$asObjectDesc(internal$GuiGameOver) + "II)V",
+                        false));
+
+                    // insert
                     visitor.instructions.insertBefore(returnInsn, instList);
 
                     return true;
@@ -220,6 +191,8 @@ public class GuiGameOverTransformer implements IClassTransformer {
                     instList.add(new VarInsnNode(ALOAD, 2));
                     instList.add(new MethodInsnNode(INVOKEVIRTUAL, internal$GuiGameOver, "Retake$hook$updateScreen", "(" + Utils.ASM$asObjectDesc(internal$GuiButton) + ")Z", false));
                     instList.add(new JumpInsnNode(IFNE, continueNode));
+
+                    // insert
                     visitor.instructions.insertBefore(insertInsn, instList);
 
                     return true;
@@ -227,70 +200,6 @@ public class GuiGameOverTransformer implements IClassTransformer {
             }
 
             return false;
-        }),
-
-        Inject$hook$drawScreen(visitor -> {
-            // implementation
-            Label l0 = new Label();
-            visitor.visitLabel(l0);
-            visitor.visitVarInsn(ALOAD, 0);
-            visitor.visitFieldInsn(GETFIELD, internal$GuiGameOver, isDeobf ? "buttonList" : "field_146292_n", "Ljava/util/List;");
-            visitor.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "iterator", "()Ljava/util/Iterator;", true);
-            visitor.visitVarInsn(ASTORE, 3);
-            Label l1 = new Label();
-            visitor.visitLabel(l1);
-            visitor.visitFrame(F_APPEND, 1, new Object[]{"java/util/Iterator"}, 0, null);
-            visitor.visitVarInsn(ALOAD, 3);
-            visitor.visitMethodInsn(INVOKEINTERFACE, "java/util/Iterator", "hasNext", "()Z", true);
-            Label l2 = new Label();
-            visitor.visitJumpInsn(IFEQ, l2);
-            visitor.visitVarInsn(ALOAD, 3);
-            visitor.visitMethodInsn(INVOKEINTERFACE, "java/util/Iterator", "next", "()Ljava/lang/Object;", true);
-            visitor.visitTypeInsn(CHECKCAST, internal$GuiButton);
-            visitor.visitVarInsn(ASTORE, 4);
-            Label l3 = new Label();
-            visitor.visitLabel(l3);
-            visitor.visitVarInsn(ALOAD, 4);
-            visitor.visitTypeInsn(INSTANCEOF, internal$RetakeButton);
-            Label l4 = new Label();
-            visitor.visitJumpInsn(IFEQ, l4);
-            visitor.visitVarInsn(ALOAD, 0);
-            visitor.visitFieldInsn(GETFIELD, internal$GuiGameOver, isDeobf ? "enableButtonsTimer" : "field_146347_a", "I");
-            visitor.visitIntInsn(BIPUSH, 20);
-            visitor.visitJumpInsn(IF_ICMPLT, l4);
-            visitor.visitVarInsn(ALOAD, 4);
-            visitor.visitMethodInsn(INVOKEVIRTUAL, internal$GuiButton, isDeobf ? "isMouseOver" : "func_146115_a", "()Z", false);
-            visitor.visitJumpInsn(IFEQ, l4);
-            visitor.visitVarInsn(ALOAD, 4);
-            visitor.visitFieldInsn(GETFIELD, internal$GuiButton, isDeobf ? "enabled" : "field_146124_l", "Z");
-            Label l5 = new Label();
-            visitor.visitJumpInsn(IFEQ, l5);
-            visitor.visitLabel(l4);
-            visitor.visitFrame(F_APPEND, 1, new Object[]{internal$GuiButton}, 0, null);
-            visitor.visitJumpInsn(GOTO, l1);
-            visitor.visitLabel(l5);
-            visitor.visitFrame(F_SAME, 0, null, 0, null);
-            visitor.visitVarInsn(ALOAD, 0);
-            visitor.visitTypeInsn(NEW, internal$RetakeTextComponentTranslation);
-            visitor.visitInsn(DUP);
-            visitor.visitLdcInsn("retake.oncooldown");
-            visitor.visitInsn(ICONST_0);
-            visitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
-            visitor.visitMethodInsn(INVOKESPECIAL, internal$RetakeTextComponentTranslation, "<init>", "(Ljava/lang/String;[Ljava/lang/Object;)V", false);
-            visitor.visitVarInsn(ILOAD, 1);
-            visitor.visitVarInsn(ILOAD, 2);
-            visitor.visitMethodInsn(INVOKEVIRTUAL, internal$GuiGameOver, isDeobf ? "handleComponentHover" : "func_175272_a", "(L" + (isDeobf ? "net/minecraft/util/text/ITextComponent" : "hh") + ";II)V", false);
-            visitor.visitLabel(l2);
-            visitor.visitFrame(F_CHOP, 0, null, 0, null);
-            visitor.visitInsn(RETURN);
-            Label l6 = new Label();
-            visitor.visitLabel(l6);
-            visitor.visitLocalVariable("guiButton", Utils.ASM$asObjectDesc(internal$GuiButton), null, l3, l2, 4);
-            visitor.visitLocalVariable("this", Utils.ASM$asObjectDesc(internal$GuiGameOver), null, l0, l6, 0);
-            visitor.visitLocalVariable("mouseX", "I", null, l0, l6, 1);
-            visitor.visitLocalVariable("mouseY", "I", null, l0, l6, 2);
-
-            return true;
         });
 
         private final Function<MethodNode, Boolean> visitor;
@@ -311,14 +220,28 @@ public class GuiGameOverTransformer implements IClassTransformer {
 
         AtomicBoolean isCooldown = new AtomicBoolean();
 
-        default void Retake$hook$actionPerformed(GuiScreen guiScreen, GuiButton guiButton) {
+        default void Retake$hook$initGui(GuiGameOver gui) {
+            gui.buttonList.forEach(button -> button.y += 24);
+
+            gui.buttonList.add(
+                new RetakeButton(2, gui.width / 2 - 100, gui.height / 4 + 72, I18n.format("retake.button.respawn"))
+            );
+        }
+
+        default void Retake$hook$actionPerformed(GuiGameOver gui, GuiButton guiButton) {
             if (guiButton instanceof RetakeButton) {
                 Retake.NetworkHandler.INSTANCE.sendToServer(new RetakeMessage());
-                guiScreen.mc.displayGuiScreen(null);
+                gui.mc.displayGuiScreen(null);
             }
         }
 
-        void Retake$hook$drawScreen(int mouseX, int mouseY);
+        default void Retake$hook$drawScreen(GuiGameOver gui, int mouseX, int mouseY) {
+            if (gui.enableButtonsTimer >= 20) {
+                gui.buttonList.stream().filter(button -> button instanceof RetakeButton && button.isMouseOver() && !button.enabled)
+                    .findAny()
+                    .ifPresent((button) -> gui.handleComponentHover(new RetakeTextComponentTranslation("retake.oncooldown"), mouseX, mouseY));
+            }
+        }
 
         default boolean Retake$hook$updateScreen(GuiButton guiButton) {
             // We don't need any player info since this will be call from client side
