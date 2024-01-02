@@ -30,17 +30,23 @@ public class RetakeDataManager {
 
     @SubscribeEvent
     public void onPlayerConnectEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        RetakeDataManager.instance().playerList.putIfAbsent(event.player.getUniqueID(), 0);
+        instance().playerList.putIfAbsent(event.player.getUniqueID(), 0);
     }
 
     @SubscribeEvent
     public static void onServerTickEvent(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            RetakeDataManager.instance().decrement();
+            for (UUID uuid : instance().playerList.keySet()) {
+                instance().playerList.computeIfPresent(uuid, (key, val) -> {
+                    if (val > 0) return --val;
+                    DebugUtils.stopDebug(uuid);
+                    return null;
+                });
+            }
         }
     }
 
-    public RetakeDataManager() {
+    private RetakeDataManager() {
         playerList = new Object2IntArrayMap<>();
     }
 
@@ -54,27 +60,13 @@ public class RetakeDataManager {
         return instance;
     }
 
-    public static int getRetakeData(EntityPlayer player) {
-        return RetakeDataManager.instance().playerList.getInt(player.getUniqueID());
-    }
-
     public static void setRetakeData(EntityPlayer player, int value) {
-        RetakeDataManager.instance().playerList.put(player.getUniqueID(), value);
+        instance().playerList.put(player.getUniqueID(), value);
         DebugUtils.startDebug(player.getUniqueID());
     }
 
-    private void decrement() {
-        for (UUID uuid : playerList.keySet()) {
-            playerList.computeIfPresent(uuid, (key, val) -> {
-                if (val > 0) return --val;
-                DebugUtils.stopDebug(uuid);
-                return val;
-            });
-        }
-    }
-
     public static boolean isCooldown(EntityPlayer player) {
-        return getRetakeData(player) > 0;
+        return instance().playerList.getInt(player.getUniqueID()) > 0;
     }
 
 }
