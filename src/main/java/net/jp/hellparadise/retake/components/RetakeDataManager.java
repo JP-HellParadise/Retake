@@ -5,6 +5,10 @@ import java.util.UUID;
 import net.jp.hellparadise.retake.Tags;
 import net.jp.hellparadise.retake.util.DebugUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -13,21 +17,16 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 @Mod.EventBusSubscriber(modid = Tags.MOD_ID)
 public class RetakeDataManager {
 
-    private static RetakeDataManager instance;
+    public static final DataParameter<Boolean> Retake$Init = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
 
-    public static RetakeDataManager instance() {
-        if (instance == null) {
-            instance = new RetakeDataManager();
+    @SubscribeEvent
+    public static void onPlayerTickEvent(EntityEvent.EntityConstructing event) {
+        if (event.getEntity() instanceof EntityPlayer player) {
+            player.getDataManager().register(Retake$Init, false);
         }
-
-        return instance;
     }
 
     private final Object2IntArrayMap<UUID> playerList;
-
-    public RetakeDataManager() {
-        playerList = new Object2IntArrayMap<>();
-    }
 
     @SubscribeEvent
     public void onPlayerConnectEvent(PlayerEvent.PlayerLoggedInEvent event) {
@@ -39,6 +38,20 @@ public class RetakeDataManager {
         if (event.phase == TickEvent.Phase.END) {
             RetakeDataManager.instance().decrement();
         }
+    }
+
+    public RetakeDataManager() {
+        playerList = new Object2IntArrayMap<>();
+    }
+
+    private static RetakeDataManager instance;
+
+    public static RetakeDataManager instance() {
+        if (instance == null) {
+            instance = new RetakeDataManager();
+        }
+
+        return instance;
     }
 
     public static int getRetakeData(EntityPlayer player) {
@@ -63,4 +76,5 @@ public class RetakeDataManager {
     public static boolean isCooldown(EntityPlayer player) {
         return getRetakeData(player) > 0;
     }
+
 }

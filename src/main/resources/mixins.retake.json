@@ -1,6 +1,6 @@
 {
       "server": [],
-      "mixins": [],
+      "mixins": ["Retake_PlayerList"],
       "package": "net.jp.hellparadise.retake.mixin.early",
       "minVersion": "0.8.5",
       "compatibilityLevel": "JAVA_8",
