@@ -1,0 +1,11 @@
+# config
+retake.config.general.min=Minimum radius
+retake.config.general.max=Maximum radius
+retake.config.general.retry=Retry attempt
+retake.config.general.cooldown=Global cooldown
+
+# button
+retake.button.respawn=Start Retake
+
+# tooltip
+retake.oncooldown=Retake is on cooldown, please avoid getting kill early.
