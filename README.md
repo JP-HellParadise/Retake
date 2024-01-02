@@ -1,6 +1,6 @@
 ## Retakes
 
-"Retake what was meant to be yours."
+"I strive for something beyond the strongest, that challenging me would be the most ridiculous thought ever, that fighting me would be a sin!"
 
 Utilized for players who like roaming far from the spawnpoint but don't want items despawned before they get back to the death location.
 Doesn't guarantee that you can re-obtain the items.
