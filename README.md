@@ -1,6 +1,6 @@
-<img src="https://github.com/JP-HellParadise/Retake/assets/24401452/1b05b13d-0a7b-403b-ba7a-9483bf965905" width="600">
+<img src="https://github.com/JP-HellParadise/Retake/assets/24401452/1b05b13d-0a7b-403b-ba7a-9483bf965905" width="600" alt="">
 
-## Retakes
+## Retake
 
 "I strive for something beyond the strongest, that challenging me would be the most ridiculous thought ever, that fighting me would be a sin!"
 
