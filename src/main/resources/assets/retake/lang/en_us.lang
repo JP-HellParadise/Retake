@@ -9,3 +9,6 @@ retake.button.respawn=Start Retake
 
 # tooltip
 retake.oncooldown=Retake is on cooldown, please avoid getting kill early.
+
+# message
+retake.message.failed=Retake failed to find valid respawn position. You will respawn normally instead.

@@ -2,7 +2,6 @@ package net.jp.hellparadise.retake.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.jp.hellparadise.retake.Retake;
-import net.jp.hellparadise.retake.RetakeConfig;
 import net.jp.hellparadise.retake.asm.transformer.GuiGameOverTransformer;
 import net.jp.hellparadise.retake.components.RetakeDataManager;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -48,7 +47,6 @@ public class RetakeMessage implements IMessage {
                     Retake.proxy.getThreadListener(ctx).addScheduledTask(() -> {
                         netHandler.player.getDataManager().set(RetakeDataManager.Retake$Init, true);
                         netHandler.player = netHandler.player.server.getPlayerList().recreatePlayerEntity(netHandler.player, netHandler.player.dimension, false);
-                        RetakeDataManager.setRetakeData(netHandler.player, RetakeConfig.global.cooldownAsTicks());
                     });
                 }
             } else if (ctx.side.isClient()) {

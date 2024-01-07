@@ -1,7 +1,9 @@
 package net.jp.hellparadise.retake.components;
 
+import java.util.Arrays;
 import javax.annotation.Nullable;
 import net.jp.hellparadise.retake.RetakeConfig;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -18,13 +20,13 @@ public class RetakeRandom {
     @Nullable public static BlockPos pickNewSpawnPos(World world, BlockPos originalPos) {
         BlockPos newPos = null;
 
-        for (int i = 0; newPos == null || i < RetakeConfig.global.retryAttempt ; i++) {
+        for (int i = 0; newPos == null && i < RetakeConfig.global.retryAttempt ; i++) {
             int x = originalPos.getX() + (world.rand.nextBoolean() ? -1 : 1) * RandomUtils.nextInt(RetakeConfig.global.minRadius, RetakeConfig.global.maxRadius);
             int z = originalPos.getZ() + (world.rand.nextBoolean() ? 1 : -1) * RandomUtils.nextInt(RetakeConfig.global.minRadius, RetakeConfig.global.maxRadius);
 
             newPos = getValidYSpawnPos(world, new BlockPos(x, originalPos.getY(), z));
 
-            if (!WorldEntitySpawner.canCreatureTypeSpawnAtLocation(EntityLiving.SpawnPlacementType.ON_GROUND, world, newPos))
+            if (checkForBlacklist(world.getBlockState(newPos.down()).getBlock()) || !WorldEntitySpawner.canCreatureTypeSpawnAtLocation(EntityLiving.SpawnPlacementType.ON_GROUND, world, newPos))
             {
                 newPos = null;
             }
@@ -92,6 +94,11 @@ public class RetakeRandom {
         else {
             currentPos.setPos(currentPos.getX() + 1, currentPos.getY(), currentPos.getZ());
         }
+    }
+
+    private static boolean checkForBlacklist(Block block) {
+        return Arrays.stream(RetakeConfig.filter.blacklistBlock)
+            .anyMatch(it -> Block.REGISTRY.getNameForObject(block).toString().equals(it));
     }
 
 }
