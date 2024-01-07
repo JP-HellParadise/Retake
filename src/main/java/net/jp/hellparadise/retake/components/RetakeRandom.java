@@ -18,9 +18,9 @@ public class RetakeRandom {
     @Nullable public static BlockPos pickNewSpawnPos(World world, BlockPos originalPos) {
         BlockPos newPos = null;
 
-        for (int i = 0 ; newPos == null || i < RetakeConfig.retryAttempt ; i++) {
-            int x = originalPos.getX() + (world.rand.nextBoolean() ? -1 : 1) * RandomUtils.nextInt(RetakeConfig.minRadius, RetakeConfig.maxRadius);
-            int z = originalPos.getZ() + (world.rand.nextBoolean() ? 1 : -1) * RandomUtils.nextInt(RetakeConfig.minRadius, RetakeConfig.maxRadius);
+        for (int i = 0; newPos == null || i < RetakeConfig.global.retryAttempt ; i++) {
+            int x = originalPos.getX() + (world.rand.nextBoolean() ? -1 : 1) * RandomUtils.nextInt(RetakeConfig.global.minRadius, RetakeConfig.global.maxRadius);
+            int z = originalPos.getZ() + (world.rand.nextBoolean() ? 1 : -1) * RandomUtils.nextInt(RetakeConfig.global.minRadius, RetakeConfig.global.maxRadius);
 
             newPos = getValidYSpawnPos(world, new BlockPos(x, originalPos.getY(), z));
 

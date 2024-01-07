@@ -12,7 +12,7 @@ public class DebugUtils {
     private static WeakHashMap<UUID, AtomicLong> debugList;
 
     public static void startDebug(UUID uuid) {
-        if (!RetakeConfig.debugCounter) return;
+        if (!RetakeConfig.debug.counter) return;
 
         if (debugList == null) {
             debugList = new WeakHashMap<>();
