@@ -1,6 +1,12 @@
+[![java8](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/built-with/java8_vector.svg)](https://adoptium.net/temurin/releases/?version=8)
+[![forge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/supported/forge_vector.svg)](http://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.12.2.html)
+[![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/retake)  
+[![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/github_vector.svg)](https://github.com/JP-HellParadise/Retake)
+[![kofi-plural](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/donate/kofi-singular_vector.svg)](https://ko-fi.com/korewalidesu)
+
 <img src="https://github.com/JP-HellParadise/Retake/assets/24401452/1b05b13d-0a7b-403b-ba7a-9483bf965905" width="600" alt="">
 
-"I strive for something beyond the strongest, that challenging me would be the most ridiculous thought ever, that fighting me would be a sin!"  
+"I strive for something beyond the strongest, that challenging me would be the most ridiculous thought ever, that fighting me would be a sin!"
 
 ## Retake
 
