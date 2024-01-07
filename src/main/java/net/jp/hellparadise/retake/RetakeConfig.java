@@ -2,7 +2,7 @@ package net.jp.hellparadise.retake;
 
 import net.minecraftforge.common.config.Config;
 
-@Config(modid = Tags.MOD_ID)
+@Config(modid = Tags.MOD_ID, category = "")
 public class RetakeConfig {
 
     @Config.Name("Global config")
@@ -61,7 +61,9 @@ public class RetakeConfig {
 
         @Config.Comment({
             "Blocks that should not be allow to respawn on, use comma as the delimiter.",
-            "Example: modid:block_name, modid2:block_name_2"
+            "Example:",
+            "   modid:block_name",
+            "   modid2:block_name_2"
         })
         public String[] blacklistBlock = new String[]{};
 
