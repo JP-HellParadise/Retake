@@ -1,13 +1,16 @@
 <img src="https://github.com/JP-HellParadise/Retake/assets/24401452/1b05b13d-0a7b-403b-ba7a-9483bf965905" width="600" alt="">
 
+"I strive for something beyond the strongest, that challenging me would be the most ridiculous thought ever, that fighting me would be a sin!"  
+
 ## Retake
 
-"I strive for something beyond the strongest, that challenging me would be the most ridiculous thought ever, that fighting me would be a sin!"
-
-Utilized for players who like roaming far from the spawnpoint but don't want items despawned before they get back to the death location.
+Utilized for players who like roaming far from the spawnpoint but don't want items despawned before they get back to the death location.  
 Doesn't guarantee that you can re-obtain the items.
 
-Highly configurable within the mod itself.
+### Feature
+- New button allow you to respawn near the death location.
+- Highly configurable within the mod itself (respawn radius, pos finder retry attempt, etc.).
+- (Soon) API support for mod. Or register new configuration per dimension, via CT or GrS.
 
 ## Mod template
 
