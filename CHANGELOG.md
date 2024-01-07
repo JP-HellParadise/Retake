@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2] - 2024-01-02
+## 0.2.0 - 2024-01-02
 
 ### Added
 - New button to death gui.
@@ -11,7 +11,7 @@
 ### Changed
 - Adjust exist buttons height to inject new button.
 
-## [0.1] - 2024-01-01
+## 0.1.0 - 2024-01-01
 
 ### Added
 - Retake
